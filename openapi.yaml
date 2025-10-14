@@ -1,0 +1,50 @@
+openapi: 3.0.3
+info:
+  title: Meta-Commerce API
+  version: 0.1.0
+servers:
+  - url: http://localhost:4000
+paths:
+  /health:
+    get:
+      summary: Health check
+      responses:
+        '200':
+          description: OK
+  /search:
+    get:
+      summary: Product meta-search
+      parameters:
+        - in: query
+          name: q
+          schema: { type: string }
+          required: true
+        - in: query
+          name: limit
+          schema: { type: integer, default: 10 }
+      responses:
+        '200':
+          description: Ranked product results
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  query: { type: string }
+                  items:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ProductResult'
+components:
+  schemas:
+    ProductResult:
+      type: object
+      properties:
+        title: { type: string }
+        price: { type: number }
+        currency: { type: string }
+        url: { type: string, format: uri }
+        vendor: { type: string }
+        delivery_eta: { type: string }
+        image: { type: string }
+        score: { type: number, description: '0..1 overall score' }
